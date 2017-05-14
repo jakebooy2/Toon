@@ -1,0 +1,7 @@
+token:
+guild:
+mysql_database: jFramework
+mysql_host: localhost
+mysql_username: root
+mysql_password:
+mysql_port: 3306
