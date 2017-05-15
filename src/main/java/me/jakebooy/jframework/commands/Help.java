@@ -52,7 +52,7 @@ public class Help extends AbstractCommand {
             String command = args[0];
             if(jFramework.getCommandManager().getCommand(command) != null){
                 Command cmd = jFramework.getCommandManager().getCommand(command);
-                String help = cmd.getHelp();
+                String help = cmd.getHelp().replace("$n", "\n");
                 message.getTextChannel().sendMessage("**" + cmd.getName() + ": **" + help).queue();
             }else{
                 message.getTextChannel().sendMessage("**ERROR** Unknown command!").queue();

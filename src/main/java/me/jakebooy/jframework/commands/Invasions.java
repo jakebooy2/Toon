@@ -90,7 +90,7 @@ class T extends Thread{
             String progress = object.getString("invasion_progress");
             String remaining = object.getString("invasion_remaining");
 
-            message = message + String.format("%-15s - %-20s%-30s%-11s", district, cog, "with " + remaining + " remaining", " (" + progress + ")") + "\n";
+            message = message + String.format("%-18s - %-20s%-30s%-11s", district, cog, "with " + remaining + " remaining", " (" + progress + ")") + "\n";
         }
         Invasions.message.getTextChannel().sendMessage("```" + message + "```").queue();
         this.stop();
