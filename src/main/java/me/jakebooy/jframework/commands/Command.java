@@ -20,7 +20,7 @@ public class Command extends AbstractCommand {
 
     @Override
     public void execute(Guild server, Message message, PermissionUser user, String[] args) {
-        if(!user.hasPermission("admin.command")){
+        if(!user.hasPermission("toon.admin.command")){
             message.getTextChannel().sendMessage("It looks like you're not authorized to do that!").queue();
             return;
         }

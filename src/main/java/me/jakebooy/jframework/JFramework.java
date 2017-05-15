@@ -1,12 +1,11 @@
 package me.jakebooy.jframework;
 
 import me.jakebooy.jframework.command.CommandManager;
-import me.jakebooy.jframework.commands.Command;
-import me.jakebooy.jframework.commands.Help;
-import me.jakebooy.jframework.commands.Perm;
+import me.jakebooy.jframework.commands.*;
 import me.jakebooy.jframework.configuration.Config;
 import me.jakebooy.jframework.configuration.ConfigProperties;
 import me.jakebooy.jframework.database.MySQL;
+import me.jakebooy.jframework.event.GuildMemberJoin;
 import me.jakebooy.jframework.event.GuildMemberLeave;
 import me.jakebooy.jframework.event.MessageSend;
 import me.jakebooy.jframework.event.RoleDelete;
@@ -39,6 +38,7 @@ public class JFramework {
             api.addEventListener(new MessageSend(this));
             api.addEventListener(new GuildMemberLeave(this));
             api.addEventListener(new RoleDelete(this));
+            api.addEventListener(new GuildMemberJoin(this));
         }catch(Exception e){
             new JFramework(token);
         }
@@ -55,7 +55,7 @@ public class JFramework {
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `user_permissions` (\n`id` INT NOT NULL AUTO_INCREMENT,\n`user_id` VARCHAR(50) NULL,\n`permission` VARCHAR(50) NULL,\nPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `bot_config` (\n\t`path` VARCHAR(50) NOT NULL,\n\t`value` VARCHAR(50) NULL,\n\tPRIMARY KEY (`path`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
 
-        mySQL.execute("INSERT INTO `jFramework`.`bot_config` (`path`, `value`) VALUES ('prefix', '`');");
+        mySQL.execute("INSERT INTO bot_config (`path`, `value`) VALUES ('prefix', '`')");
 
         config = new Config(this);
 
@@ -68,13 +68,15 @@ public class JFramework {
         commandManager.registerCommand("help", new Help(this));
         commandManager.registerCommand("perm", new Perm(this));
         commandManager.registerCommand("command", new Command(this));
+        commandManager.registerCommand("purge", new Purge(this));
+        commandManager.registerCommand("toon", new Toon(this));
+        commandManager.registerCommand("invasions", new Invasions(this));
 
     }
 
     public static CommandManager getCommandManager(){
         return commandManager;
     }
-
 
     public static JDA getApi(){
         return api;

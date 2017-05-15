@@ -26,7 +26,7 @@ public class Perm extends AbstractCommand {
 
     @Override
     public void execute(Guild server, Message message, PermissionUser user, String[] args) {
-        if(user.hasPermission("admin.perm")){
+        if(user.hasPermission("toon.admin.perm")){
             if(args.length == 0){
                 String prefix = " - ";
                 String permHelp = "**>** Permission Help\n" +
