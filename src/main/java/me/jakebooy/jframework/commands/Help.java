@@ -5,9 +5,12 @@ import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.command.Command;
 import me.jakebooy.jframework.handler.AbstractCommand;
 import me.jakebooy.jframework.permissions.PermissionUser;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;

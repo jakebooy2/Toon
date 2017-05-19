@@ -19,7 +19,9 @@ public class GuildMemberLeave extends ListenerAdapter {
     @Override
     public void onGuildMemberLeave(GuildMemberLeaveEvent e){
         User user = e.getMember().getUser();
-        jFramework.getMySQL().remove("DELETE FROM user_permissions WHERE user_id = ?", user.getId());
+        try{
+            jFramework.getMySQL().remove("DELETE FROM user_permissions WHERE user_id = ?", user.getId());
+        }catch(Exception e1){}
         System.out.println(user.getName() + " left the server.");
     }
 

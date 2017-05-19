@@ -3,6 +3,8 @@ package me.jakebooy.jframework.commands;
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.handler.AbstractCommand;
 import me.jakebooy.jframework.permissions.PermissionUser;
+import me.jakebooy.jframework.util.Util;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import org.json.JSONArray;
@@ -32,13 +34,18 @@ public class Invasions extends AbstractCommand {
         this.message = message;
         JSONArray array = new JSONArray(getSource("http://api.ttr-invasions.com/json/invasionlist/"));
         if (array.length() == 1) {
-            message.getTextChannel().sendMessage("**HQ >** There is 1 active invasion:").queue();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(JFramework.getUtil().getColor(57, 204, 204));
+            builder.setDescription("There is 1 active invasion:");
             JSONObject object = array.getJSONObject(0);
             String cog = object.getString("invasion_cog");
             String district = object.getString("invasion_district");
-            String progress = object.getString("invasion_progress");
             String remaining = object.getString("invasion_remaining");
-            message.getTextChannel().sendMessage("```" + district + " - " + cog + " with " + remaining + " remaining (" + progress + ")```").queue();
+            builder.addField("Cog", cog, true);
+            builder.addField("District", district, true);
+            builder.addField("Time Remaining", remaining, true);
+            builder.setFooter("Toon Bot by Jakebooy", "https://www.gravatar.com/avatar/eac450191b27888572b65081cffc5b43");
+            Invasions.message.getTextChannel().sendMessage(builder.build()).queue();
             return;
         }
 
@@ -48,7 +55,6 @@ public class Invasions extends AbstractCommand {
         }
 
         if (array.length() > 1) {
-            message.getTextChannel().sendMessage("**HQ >** There are " + array.length() + " invasions active:").queue();
             T.s(array);
             return;
         }
@@ -77,7 +83,14 @@ class T extends Thread{
     private static JSONArray array;
 
     public void run(){
-        String message = "";
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(JFramework.getUtil().getColor(57, 204, 204));
+        builder.setDescription("There are " + array.length() + " active invasions:");
+
+        String cogs = "";
+        String districts = "";
+        String remainings = "";
+
         for (int i = 0; i < array.length(); i++) {
             try {
                 this.sleep(100);
@@ -87,12 +100,18 @@ class T extends Thread{
             JSONObject object = array.getJSONObject(i);
             String cog = object.getString("invasion_cog");
             String district = object.getString("invasion_district");
-            String progress = object.getString("invasion_progress");
             String remaining = object.getString("invasion_remaining");
 
-            message = message + String.format("%-18s - %-20s%-30s%-11s", district, cog, "with " + remaining + " remaining", " (" + progress + ")") + "\n";
+            cogs+= cog + "\n";
+            districts+= district + "\n";
+            remainings += remaining + "\n";
+
         }
-        Invasions.message.getTextChannel().sendMessage("```" + message + "```").queue();
+        builder.addField("Cog", cogs, true);
+        builder.addField("District", districts, true);
+        builder.addField("Time Remaining", remainings, true);
+        builder.setFooter("Toon Bot by Jakebooy", "https://www.gravatar.com/avatar/eac450191b27888572b65081cffc5b43");
+        Invasions.message.getTextChannel().sendMessage(builder.build()).queue();
         this.stop();
     }
 

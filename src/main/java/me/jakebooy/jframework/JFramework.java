@@ -33,6 +33,7 @@ public class JFramework {
     }
 
     public JFramework(String token){
+
         try{
             api = new JDABuilder(AccountType.BOT).setToken(token).setAutoReconnect(true).buildBlocking();
             api.addEventListener(new MessageSend(this));
@@ -54,8 +55,12 @@ public class JFramework {
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `role_permissions` (\n\t`id` INT NOT NULL AUTO_INCREMENT,\n\t`role_id` VARCHAR(50) NOT NULL,\n\t`role` VARCHAR(50) NOT NULL,\n\t`permission` VARCHAR(50) NOT NULL,\n\tPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n");
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `user_permissions` (\n`id` INT NOT NULL AUTO_INCREMENT,\n`user_id` VARCHAR(50) NULL,\n`permission` VARCHAR(50) NULL,\nPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `bot_config` (\n\t`path` VARCHAR(50) NOT NULL,\n\t`value` VARCHAR(50) NULL,\n\tPRIMARY KEY (`path`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS warns ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, warner VARCHAR(50) NOT NULL, warner_id VARCHAR(50) NOT NULL, warned VARCHAR(50) NOT NULL, warned_id VARCHAR(50) NOT NULL, warn_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS kicks ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, kicker VARCHAR(50) NOT NULL, kicker_id VARCHAR(50) NOT NULL, kicked VARCHAR(50) NOT NULL, kicked_id VARCHAR(50) NOT NULL, kick_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS bans ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, banner VARCHAR(50) NOT NULL, banner_id VARCHAR(50) NOT NULL, banned VARCHAR(50) NOT NULL, banned_id VARCHAR(50) NOT NULL, ban_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
 
-        mySQL.execute("INSERT INTO bot_config (`path`, `value`) VALUES ('prefix', '`')");
+        mySQL.add("INSERT INTO bot_config (path, value) VALUES (?, ?)", "prefix", "`");
+        mySQL.add("INSERT INTO bot_config (path, value) VALUES (?, ?)", "logs", "314466254817591296");
 
         config = new Config(this);
 
@@ -71,6 +76,9 @@ public class JFramework {
         commandManager.registerCommand("purge", new Purge(this));
         commandManager.registerCommand("toon", new Toon(this));
         commandManager.registerCommand("invasions", new Invasions(this));
+        commandManager.registerCommand("warn", new Warn(this));
+        commandManager.registerCommand("kick", new Kick(this));
+        commandManager.registerCommand("ban", new Ban(this));
 
     }
 
