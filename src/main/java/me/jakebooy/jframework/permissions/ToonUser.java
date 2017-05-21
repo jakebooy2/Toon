@@ -2,25 +2,30 @@ package me.jakebooy.jframework.permissions;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.roles.JRole;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 import oracle.jrockit.jfr.JFR;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by jakebooy on 19/04/17.
  */
-public class PermissionUser {
+public class ToonUser {
 
     private User user;
     private Member member;
     private List<String> roles = new ArrayList<>();
     private List<String> permissions = new ArrayList<>();
+    private int balance = 0;
+    private int request_tokens = 0;
+    private int skip_tokens = 0;
 
-    public PermissionUser(User user){
+    public ToonUser(User user){
         this.user = user;
         List<Role> roles = JFramework.getApi().getGuildById(JFramework.getProperties().getString("guild")).getRoles();
         for(Role role : roles){
@@ -29,7 +34,7 @@ public class PermissionUser {
                 addRole(role.getName());
             }
         }
-
+        getFirstBalance();
     }
 
     public List<String> getPermissions() {
@@ -102,6 +107,72 @@ public class PermissionUser {
 
     public Member getMember(){
         return member;
+    }
+
+    public void getFirstBalance(){
+        try {
+            HashMap<String, Object> u = JFramework.getStaticSQL().find("SELECT * FROM economy_balances WHERE user_id = ?", user.getId()).get(0);
+            this.balance = Integer.parseInt(u.get("balance").toString());
+            this.request_tokens = Integer.parseInt(u.get("request_tokens").toString());
+            this.skip_tokens = Integer.parseInt(u.get("skip_tokens").toString());
+        }catch(Exception e) {
+            JFramework.getStaticSQL().add("INSERT INTO economy_balances (user_id, balance, request_tokens, skip_tokens) VALUES (?, ?, ?, ?)", user.getId(), 5, 0, 0);
+            this.balance = 5;
+            this.request_tokens = 0;
+            this.skip_tokens = 0;
+        }
+    }
+
+    public int getBalance(){
+        return balance;
+    }
+
+    public int getRequestTokens(){
+        return request_tokens;
+    }
+
+    public int getSkipTokens(){
+        return skip_tokens;
+    }
+
+    public void addBalance(int balance){
+        this.balance+= balance;
+        JFramework.getStaticSQL().update("UPDATE economy_balance SET balance = ? WHERE user_id = ?", this.balance, user.getId());
+    }
+
+    public void removeBalance(int balance){
+        this.balance-= balance;
+        JFramework.getStaticSQL().update("UPDATE economy_balance SET balance = ? WHERE user_id = ?", this.balance, user.getId());
+    }
+
+    public void addRequestTokens(int tokens){
+        this.request_tokens+= tokens;
+        JFramework.getStaticSQL().update("UPDATE economy_balance SET request_tokens = ? WHERE user_id = ?", this.request_tokens, user.getId());
+    }
+
+    public void removeRequestTokens(int tokens){
+        this.request_tokens-= tokens;
+        JFramework.getStaticSQL().update("UPDATE economy_balance SET request_tokens = ? WHERE user_id = ?", this.request_tokens, user.getId());
+    }
+
+    public void addSkipTokens(int tokens){
+        this.skip_tokens+= tokens;
+        JFramework.getStaticSQL().update("UPDATE economy_balance SET skip_tokens = ? WHERE user_id = ?", this.skip_tokens, user.getId());
+    }
+
+    public void addRemoveTokens(int tokens){
+        this.skip_tokens-= tokens;
+        JFramework.getStaticSQL().update("UPDATE economy_balance SET skip_tokens = ? WHERE user_id = ?", this.skip_tokens, user.getId());
+    }
+
+    public EmbedBuilder getBalanceMessage(){
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(JFramework.getUtil().getColor(1, 255, 112));
+        builder.setAuthor(user.getName(), user.getAvatarUrl(), user.getAvatarUrl());
+        builder.addField("Balance", "$" + getBalance(), true);
+        builder.addField("Request Tokens", getSkipTokens() + "", true);
+        builder.addField("Skip Tokens", getRequestTokens() + "", true);
+        return builder;
     }
 
 }

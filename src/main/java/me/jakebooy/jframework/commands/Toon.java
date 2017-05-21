@@ -2,7 +2,7 @@ package me.jakebooy.jframework.commands;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.handler.AbstractCommand;
-import me.jakebooy.jframework.permissions.PermissionUser;
+import me.jakebooy.jframework.permissions.ToonUser;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -18,7 +18,7 @@ public class Toon extends AbstractCommand {
     }
 
     @Override
-    public void execute(Guild server, Message message, PermissionUser user, String[] args) {
+    public void execute(Guild server, Message message, ToonUser user, String[] args) {
         if(!user.hasPermission("toon.user.toon")){
             message.getTextChannel().sendMessage("It looks like you're not authorized to do that!").queue();
             return;

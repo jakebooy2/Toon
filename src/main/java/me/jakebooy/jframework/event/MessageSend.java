@@ -2,10 +2,7 @@ package me.jakebooy.jframework.event;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.handler.CommandHandler;
-import me.jakebooy.jframework.permissions.PermissionUser;
-import me.jakebooy.jframework.util.Util;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -42,9 +39,10 @@ public class MessageSend extends CommandHandler {
                 if(!roles.isEmpty()){
                     for(Role r: roles){
                         if(r.getId().equalsIgnoreCase("314769011290144769")) c = false;
-                        if(r.getId().equalsIgnoreCase("166138524779675652")) isToon = true;
+                        if(r.getId().equalsIgnoreCase("166169934081163265")) isToon = true;
                     }
                 }
+
                 if(!isToon){
                     e.getPrivateChannel().getUser().openPrivateChannel().queue(chan -> chan.sendMessage("Whoa there, not so fast! You must accept the server rules first.").queue());
                     return;

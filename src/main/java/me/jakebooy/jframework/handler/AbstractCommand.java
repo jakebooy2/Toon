@@ -1,8 +1,7 @@
 package me.jakebooy.jframework.handler;
 
-import me.jakebooy.jframework.permissions.PermissionUser;
+import me.jakebooy.jframework.permissions.ToonUser;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 public abstract class AbstractCommand extends CommandHandler {
@@ -17,6 +16,6 @@ public abstract class AbstractCommand extends CommandHandler {
         return name;
     }
 
-    public abstract void execute(Guild server, Message message, PermissionUser user, String[] args);
+    public abstract void execute(Guild server, Message message, ToonUser user, String[] args);
 
 }

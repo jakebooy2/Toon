@@ -2,7 +2,7 @@ package me.jakebooy.jframework.commands;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.handler.AbstractCommand;
-import me.jakebooy.jframework.permissions.PermissionUser;
+import me.jakebooy.jframework.permissions.ToonUser;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -23,7 +23,7 @@ public class Warn extends AbstractCommand {
     }
 
     @Override
-    public void execute(Guild server, Message message, PermissionUser user, String[] args) {
+    public void execute(Guild server, Message message, ToonUser user, String[] args) {
         if(!user.hasPermission("toon.moderation.warn")){
             message.getTextChannel().sendMessage("It looks like you're not authorized to do that!").queue();
             return;
@@ -64,6 +64,7 @@ public class Warn extends AbstractCommand {
                 builder.addField("Reason", reason, true);
                 builder.setFooter("Toon Bot by Jakebooy", "https://www.gravatar.com/avatar/eac450191b27888572b65081cffc5b43");
                 server.getTextChannelById(jFramework.getConfig().getString("logs")).sendMessage(builder.build()).queue();
+                server.getTextChannelById(jFramework.getConfig().getString("default_channel")).sendMessage(user.getUser().getName() + " has warned " + target.getName() + "\nReason: " + reason).queue();
             }else{
                 message.getTextChannel().sendMessage("There was an error inserting the warn into the database.").queue();
             }

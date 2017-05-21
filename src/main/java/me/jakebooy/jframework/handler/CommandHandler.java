@@ -2,23 +2,18 @@ package me.jakebooy.jframework.handler;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.command.Command;
-import me.jakebooy.jframework.command.CommandManager;
-import me.jakebooy.jframework.permissions.PermissionUser;
-import me.jakebooy.jframework.util.Util;
+import me.jakebooy.jframework.permissions.ToonUser;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class CommandHandler extends ListenerAdapter {
 
 
-    public void handle(Guild server, Message message, PermissionUser user, String sMessage){
+    public void handle(Guild server, Message message, ToonUser user, String sMessage){
         if(!sMessage.startsWith(JFramework.getUtil().getPrefix())) return;
         sMessage = sMessage.substring(1);
         String[] args = sMessage.split(" ");

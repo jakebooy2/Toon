@@ -2,8 +2,7 @@ package me.jakebooy.jframework.commands;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.handler.AbstractCommand;
-import me.jakebooy.jframework.permissions.PermissionUser;
-import me.jakebooy.jframework.util.Util;
+import me.jakebooy.jframework.permissions.ToonUser;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -30,7 +29,7 @@ public class Invasions extends AbstractCommand {
     }
 
     @Override
-    public void execute(Guild server, Message message, PermissionUser user, String[] args) {
+    public void execute(Guild server, Message message, ToonUser user, String[] args) {
         this.message = message;
         JSONArray array = new JSONArray(getSource("http://api.ttr-invasions.com/json/invasionlist/"));
         if (array.length() == 1) {

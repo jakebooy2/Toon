@@ -1,5 +1,6 @@
 package me.jakebooy.jframework;
 
+import me.jakebooy.jframework.cog.CogManager;
 import me.jakebooy.jframework.command.CommandManager;
 import me.jakebooy.jframework.commands.*;
 import me.jakebooy.jframework.configuration.Config;
@@ -27,6 +28,7 @@ public class JFramework {
     private static RoleManager roleManager;
     private static Util util;
     private Config config;
+    private CogManager cogManager;
 
     public static void main(String args[]){
         new JFramework(properties.getString("token"));
@@ -49,15 +51,23 @@ public class JFramework {
         staticSQL = mySQL;
         commandManager = new CommandManager(this);
         roleManager = new RoleManager(this);
+        cogManager = new CogManager(this);
 
         // Create Tables
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `commands` (\n\t`id` INT NOT NULL AUTO_INCREMENT,\n\t`command` VARCHAR(50) NOT NULL,\n\t`help` MEDIUMTEXT NOT NULL,\n\t`status` VARCHAR(50) NOT NULL,\n\tPRIMARY KEY (`id`),\n\tUNIQUE INDEX `command` (`command`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `role_permissions` (\n\t`id` INT NOT NULL AUTO_INCREMENT,\n\t`role_id` VARCHAR(50) NOT NULL,\n\t`role` VARCHAR(50) NOT NULL,\n\t`permission` VARCHAR(50) NOT NULL,\n\tPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n");
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `user_permissions` (\n`id` INT NOT NULL AUTO_INCREMENT,\n`user_id` VARCHAR(50) NULL,\n`permission` VARCHAR(50) NULL,\nPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
         mySQL.createTable("CREATE TABLE IF NOT EXISTS `bot_config` (\n\t`path` VARCHAR(50) NOT NULL,\n\t`value` VARCHAR(50) NULL,\n\tPRIMARY KEY (`path`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;");
-        mySQL.createTable("CREATE TABLE IF NOT EXISTS warns ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, warner VARCHAR(50) NOT NULL, warner_id VARCHAR(50) NOT NULL, warned VARCHAR(50) NOT NULL, warned_id VARCHAR(50) NOT NULL, warn_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
-        mySQL.createTable("CREATE TABLE IF NOT EXISTS kicks ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, kicker VARCHAR(50) NOT NULL, kicker_id VARCHAR(50) NOT NULL, kicked VARCHAR(50) NOT NULL, kicked_id VARCHAR(50) NOT NULL, kick_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
-        mySQL.createTable("CREATE TABLE IF NOT EXISTS bans ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, banner VARCHAR(50) NOT NULL, banner_id VARCHAR(50) NOT NULL, banned VARCHAR(50) NOT NULL, banned_id VARCHAR(50) NOT NULL, ban_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `warns` ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, warner VARCHAR(50) NOT NULL, warner_id VARCHAR(50) NOT NULL, warned VARCHAR(50) NOT NULL, warned_id VARCHAR(50) NOT NULL, warn_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `kicks` ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, kicker VARCHAR(50) NOT NULL, kicker_id VARCHAR(50) NOT NULL, kicked VARCHAR(50) NOT NULL, kicked_id VARCHAR(50) NOT NULL, kick_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `bans` ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, banner VARCHAR(50) NOT NULL, banner_id VARCHAR(50) NOT NULL, banned VARCHAR(50) NOT NULL, banned_id VARCHAR(50) NOT NULL, ban_date DATE NOT NULL, reason MEDIUMTEXT NOT NULL, image VARCHAR(255) NOT NULL)");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `economy_balances` (\n\t`id` INT NOT NULL AUTO_INCREMENT,\n\t`user_id` VARCHAR(100) NULL,\n\t`balance` INT NULL,\n\t`request_tokens` INT NULL,\n\t`skip_tokens` INT NULL,\n\tPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;\n");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `cogs` (\n\t`cog_id` INT NOT NULL AUTO_INCREMENT,\n\t`department` VARCHAR(50) NULL,\n\t`name` VARCHAR(50) NULL,\n\tPRIMARY KEY (`cog_id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;\n");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `cogs_levels` (\n\t`cog_id` INT NOT NULL,\n\t`min` INT NOT NULL,\n\t`max` INT NOT NULL,\n\tPRIMARY KEY (`cog_id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;\n");
+        mySQL.createTable("CREATE TABLE IF NOT EXISTS `cogs_streets` (\n\t`id` INT NOT NULL AUTO_INCREMENT,\n\t`cog_id` INT NULL,\n\t`street` VARCHAR (50) NULL,\n\tPRIMARY KEY (`id`)\n)\nCOLLATE='latin1_swedish_ci'\nENGINE=InnoDB\n;\n");
+
+        mySQL.execute("ALTER TABLE `cogs`\n" +
+                "\tADD COLUMN `weakness` VARCHAR(50) NOT NULL AFTER `name`;");
 
         mySQL.add("INSERT INTO bot_config (path, value) VALUES (?, ?)", "prefix", "`");
         mySQL.add("INSERT INTO bot_config (path, value) VALUES (?, ?)", "logs", "314466254817591296");
@@ -66,6 +76,7 @@ public class JFramework {
 
         permissionManager = new PermissionManager(this);
         roleManager.getRoles();
+        cogManager.getCogs();
 
         util = new Util(this);
 
@@ -79,6 +90,8 @@ public class JFramework {
         commandManager.registerCommand("warn", new Warn(this));
         commandManager.registerCommand("kick", new Kick(this));
         commandManager.registerCommand("ban", new Ban(this));
+        commandManager.registerCommand("balance", new Balance(this));
+        commandManager.registerCommand("cog", new Cog(this));
 
     }
 
@@ -112,6 +125,10 @@ public class JFramework {
 
     public Config getConfig(){
         return config;
+    }
+
+    public CogManager getCogManager(){
+        return cogManager;
     }
 
 }

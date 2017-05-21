@@ -2,9 +2,8 @@ package me.jakebooy.jframework.commands;
 
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.handler.AbstractCommand;
-import me.jakebooy.jframework.permissions.PermissionUser;
+import me.jakebooy.jframework.permissions.ToonUser;
 import me.jakebooy.jframework.roles.JRole;
-import me.jakebooy.jframework.util.Util;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -25,7 +24,7 @@ public class Perm extends AbstractCommand {
     }
 
     @Override
-    public void execute(Guild server, Message message, PermissionUser user, String[] args) {
+    public void execute(Guild server, Message message, ToonUser user, String[] args) {
         if(user.hasPermission("toon.admin.perm")){
             if(args.length == 0){
                 String prefix = " - ";
@@ -53,7 +52,7 @@ public class Perm extends AbstractCommand {
                     if(arg[0].equalsIgnoreCase("add")){
                         if(arg.length == 2){
                             String permission = arg[1];
-                            PermissionUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
+                            ToonUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
                             if(target.addPermission(permission)){
                                 message.getTextChannel().sendMessage("Permission **" + permission + "** added to **" + target.getMember().getEffectiveName() + "**!").queue();
                             }else{
@@ -68,7 +67,7 @@ public class Perm extends AbstractCommand {
                     if(arg[0].equalsIgnoreCase("remove")){
                         if(arg.length == 2){
                             String permission = arg[1];
-                            PermissionUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
+                            ToonUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
                             if(target.removePermission(permission)){
                                 message.getTextChannel().sendMessage("Permission **" + permission + "** removed from **" + target.getMember().getEffectiveName() + "**!").queue();
                             }else{
@@ -81,7 +80,7 @@ public class Perm extends AbstractCommand {
                     }
 
                     if(arg[0].equalsIgnoreCase("permissions")){
-                        PermissionUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
+                        ToonUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
                         if(target.getPermissions().isEmpty()){
                             message.getTextChannel().sendMessage("**" + target.getMember().getEffectiveName() + "** has no permissions.").queue();
                             return;
@@ -95,7 +94,7 @@ public class Perm extends AbstractCommand {
                     }
 
                     if(arg[0].equalsIgnoreCase("roles")){
-                        PermissionUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
+                        ToonUser target = jFramework.getPermissionManager().getPermissionUser(t.getId());
                         StringJoiner join = new StringJoiner(", ");
                         for(String role : target.getRoles()){
                             join.add("`" + role + "`");

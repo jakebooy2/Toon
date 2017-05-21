@@ -1,17 +1,12 @@
 package me.jakebooy.jframework.commands;
 
-import javafx.embed.swing.JFXPanel;
 import me.jakebooy.jframework.JFramework;
 import me.jakebooy.jframework.command.Command;
 import me.jakebooy.jframework.handler.AbstractCommand;
-import me.jakebooy.jframework.permissions.PermissionUser;
-import net.dv8tion.jda.core.EmbedBuilder;
+import me.jakebooy.jframework.permissions.ToonUser;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -27,7 +22,7 @@ public class Help extends AbstractCommand {
     }
 
     @Override
-    public void execute(Guild server, Message message, PermissionUser user, String[] args) {
+    public void execute(Guild server, Message message, ToonUser user, String[] args) {
         List<Command> commands = jFramework.getCommandManager().getCommands();
         if(args.length == 0){
             StringJoiner join = new StringJoiner(", ");
